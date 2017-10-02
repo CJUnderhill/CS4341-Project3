@@ -13,19 +13,30 @@ images = np.load('data/images.npy')
 labels = np.load('data/labels.npy')
 NUM_CLASSES = 10
 
+# Preprocess images
+vectorized_images = []
+for i in images:
+    vectorized_images.append(np.reshape(i, -1))
+#print('Image 0:')
+#print(images[0])
+#print(vectorized_images[0])
+#print('Image 1:')
+#print(images[1])
+#print(vectorized_images[1])
+
+
 # Convert image labels to "one-hot vectors" of length ten
 one_hot_labels = keras.utils.to_categorical(labels, NUM_CLASSES)
 #for l in one_hot_labels:
 #    print(l)
 
-print(images)
 
 
 # Model Template
 
-model = Sequential() # declare model
-model.add(Dense(10, input_shape=(28*28, ), kernel_initializer='he_normal')) # first layer
-model.add(Activation('relu'))
+#model = Sequential() # declare model
+#model.add(Dense(10, input_shape=(28*28, ), kernel_initializer='he_normal')) # first layer
+#model.add(Activation('relu'))
 #
 #
 #
