@@ -105,9 +105,22 @@ model.add(Dense(10, kernel_initializer='he_normal', activation='softmax')) # Req
 # Compile Model
 model.compile(optimizer='sgd', loss='categorical_crossentropy', metrics=['accuracy'])
 
-# Train Model
-#history = model.fit(x_train, y_train, validation_data = (x_val, y_val), epochs=125, batch_size=3, verbose=2)
+
+# ==================================================
+#               Train Model
+# ==================================================
+
+''' This fit gives mediocre accuracy over a medium-small period of time'''
+#history = model.fit(x_train, y_train, validation_data = (x_val, y_val), epochs=100, batch_size=32, verbose=2)
+
+''' This fit gives great accuracy over a medium-large period of time'''
 history = model.fit(x_train, y_train, validation_data = (x_val, y_val), epochs=100, batch_size=12, verbose=2)
+
+''' This fit gives exceptional accuracy over a large period of time'''
+#history = model.fit(x_train, y_train, validation_data = (x_val, y_val), epochs=125, batch_size=3, verbose=2)
+
+''' This fit gives exceptional accuracy over an immense period of time'''
+#history = model.fit(x_train, y_train, validation_data = (x_val, y_val), epochs=150, batch_size=1, verbose=2)
 
 # Report Results
 print(history.history)
@@ -148,6 +161,26 @@ for t in y_test:
 # Generate Confusion Matrix
 y_actual = pd.Series(actual, name='Actual')
 y_predict = pd.Series(projection, name='Predicted')
-df_confusion = pd.crosstab(y_actual, y_predict)
+confusion_matrix = pd.crosstab(y_actual, y_predict)
 
-print(df_confusion)
+# Generate normalized confusion matrix
+norm_confusion_matrix = confusion_matrix / confusion_matrix.sum(axis=1)
+
+# Generate full confusion matrix with totals
+full_confusion_matrix = pd.crosstab(y_actual, y_predict, rownames=['Actual'], colnames=['Predicted'], margins=True)
+
+print(norm_confusion_matrix)
+print(full_confusion_matrix)
+
+# Pretty plot pretty please
+cmap = mpl.cm.get_cmap('Oranges')
+plt.matshow(confusion_matrix, cmap=cmap)
+plt.colorbar()
+tick_marks = np.arange(len(confusion_matrix.columns))
+plt.xticks(tick_marks, confusion_matrix.columns, rotation=45)
+plt.yticks(tick_marks, confusion_matrix.index)
+
+plt.ylabel(confusion_matrix.index.name)
+plt.xlabel(confusion_matrix.columns.name)
+
+plt.show()
