@@ -95,12 +95,15 @@ plt.show()
 
 # Model Template
 model = Sequential() # declare model
-model.add(Dense(px_count, activation='relu', kernel_initializer='he_normal', input_dim=px_count)) # Simplified first layer
-model.add(Dense(class_count, activation='softmax', kernel_initializer='he_normal')) # Second layer to include number class
+model.add(Dense(300, activation='relu', kernel_initializer='glorot_normal', input_shape=(px_count,))) # Simplified first layer
+#model.add(Dense(class_count, activation='softmax', kernel_initializer='he_normal')) # Second layer to include number class
 
 # ---------- Add more model layers here! ---------- #
+#model.add(Dense(1028, activation='tanh', kernel_initializer='he_uniform'))
+model.add(Dense(100, activation='selu', kernel_initializer='he_normal'))
+#model.add(Dense(49, activation='selu', kernel_initializer='he_normal'))
 
-model.add(Dense(10, kernel_initializer='he_normal', activation='softmax')) # Required final layer
+model.add(Dense(class_count, kernel_initializer='he_normal', activation='softmax')) # Required final layer
 
 # Compile Model
 model.compile(optimizer='sgd', loss='categorical_crossentropy', metrics=['accuracy'])
@@ -111,10 +114,10 @@ model.compile(optimizer='sgd', loss='categorical_crossentropy', metrics=['accura
 # ==================================================
 
 ''' This fit gives mediocre accuracy over a medium-small period of time'''
-#history = model.fit(x_train, y_train, validation_data = (x_val, y_val), epochs=100, batch_size=32, verbose=2)
+history = model.fit(x_train, y_train, validation_data = (x_val, y_val), epochs=100, batch_size=64, verbose=2)
 
 ''' This fit gives great accuracy over a medium-large period of time'''
-history = model.fit(x_train, y_train, validation_data = (x_val, y_val), epochs=100, batch_size=12, verbose=2)
+#history = model.fit(x_train, y_train, validation_data = (x_val, y_val), epochs=100, batch_size=12, verbose=2)
 
 ''' This fit gives exceptional accuracy over a large period of time'''
 #history = model.fit(x_train, y_train, validation_data = (x_val, y_val), epochs=125, batch_size=3, verbose=2)
@@ -183,4 +186,4 @@ plt.yticks(tick_marks, confusion_matrix.index)
 plt.ylabel(confusion_matrix.index.name)
 plt.xlabel(confusion_matrix.columns.name)
 
-plt.show()
+#plt.show()
