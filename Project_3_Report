@@ -1,0 +1,43 @@
+Daniel Kim, Chad Underhill, Spyridon Antonatos
+CS4341 Project 3 Written Report
+9/6/2017
+
+Set of Experiments Performed
+
+We experimented first with no layers added to what was initially given, one hidden layer and the output layer.
+We changed the batch size, number of epochs, activation function, and ???weight initialization scheme.
+The batch sizes we tried were 512, 256, 64, and 32. The accuracies were... the other variables were at...
+We tried changing the activation functions from relu to tanh and selu. Relu worked the best for...
+We also tried changin the number of epochs from 100 to 50 and 200???
+We tried adding several layers with 512, 196, 49 nodes...
+
+
+Model & Training Procedure Description
+
+The most accurate model we were able to obtain was using:
+model structure
+# of layers
+# of neurons in each layer
+weight initialization scheme
+activation function
+# of epochs for training
+batch size for training
+
+
+Graph
+
+epoch vs training set accuracy
+epoch vs validation set accuracy
+
+
+Model Performance & Confusion Matrix
+
+confusion matrix
+overall accuracy of model
+
+
+Visualization
+
+3 visualizations of misclassified images by best model
+observations on why misclassified
+
