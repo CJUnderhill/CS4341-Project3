@@ -4,6 +4,7 @@
 
 import keras
 from keras.models import Sequential
+from keras.models import load_model
 from keras.layers import Dense, Activation
 import numpy as np
 import pandas as pd
@@ -108,7 +109,6 @@ model.add(Dense(class_count, kernel_initializer='he_normal', activation='softmax
 # Compile Model
 model.compile(optimizer='sgd', loss='categorical_crossentropy', metrics=['accuracy'])
 
-
 # ==================================================
 #               Train Model
 # ==================================================
@@ -125,10 +125,31 @@ history = model.fit(x_train, y_train, validation_data = (x_val, y_val), epochs=1
 ''' This fit gives exceptional accuracy over an immense period of time'''
 #history = model.fit(x_train, y_train, validation_data = (x_val, y_val), epochs=150, batch_size=1, verbose=2)
 
+# Final evaluation of the model
+scores = model.evaluate(x_test, y_test, verbose=0)
+error_pctg = 100 - scores[1] * 100
+print("Error Percentage: %.2f%%" % error_pctg)
+
+# Record best model results
+lowest_error = float(100)
+curr_best_score = ''
+with open('best_score.txt') as best_score:
+    curr_best_score = best_score.read()
+
+# Compare current model results to best-on-record
+if curr_best_score:
+    lowest_error = float(curr_best_score.replace('\n', ''))
+else:
+    lowest_error = float(100)
+
+# Save model config that performs best
+if error_pctg < lowest_error:
+    with open('best_score.txt', 'w') as best_score:
+        best_score.write(str(error_pctg) + '\n')
+    model.save('trained_model.h5')
+
 # Report Results
 print(history.history)
-#scores = model.evaluate(x_val, y_val)
-#print(scores)
 prediction = model.predict(x_test, batch_size=64)
 
 
