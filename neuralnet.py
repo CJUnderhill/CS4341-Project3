@@ -1,6 +1,5 @@
-#
-#
-#
+# CS4341 Project 3
+# Developed by Daniel Kim, Spyridon Antonatos, Chad Underhill
 
 import keras
 from keras.models import Sequential
@@ -29,8 +28,6 @@ labels = np.load('data/labels.npy')
 
 # Convert image labels to "one-hot vectors"
 one_hot_labels = keras.utils.to_categorical(labels)
-#for l in one_hot_labels:
-#    print(l)
 
 # Contains the random, stratified sampling of data set
 x_train, y_train = [], []
@@ -96,34 +93,24 @@ plt.show()
 
 # Model Template
 model = Sequential() # declare model
-model.add(Dense(300, activation='relu', kernel_initializer='glorot_normal', input_shape=(px_count,))) # Simplified first layer
-#model.add(Dense(class_count, activation='softmax', kernel_initializer='he_normal')) # Second layer to include number class
-
-# ---------- Add more model layers here! ---------- #
-#model.add(Dense(1028, activation='tanh', kernel_initializer='he_uniform'))
-model.add(Dense(100, activation='selu', kernel_initializer='he_normal'))
-#model.add(Dense(49, activation='selu', kernel_initializer='he_normal'))
+model.add(Dense(784, activation='relu', kernel_initializer='glorot_normal', input_shape=(px_count,))) # Simplified first layer
+model.add(Dense(196, activation='relu', kernel_initializer='glorot_normal'))
+model.add(Dense(49, activation='relu', kernel_initializer='glorot_normal'))
 
 model.add(Dense(class_count, kernel_initializer='he_normal', activation='softmax')) # Required final layer
 
 # Compile Model
 model.compile(optimizer='sgd', loss='categorical_crossentropy', metrics=['accuracy'])
 
+
 # ==================================================
 #               Train Model
 # ==================================================
 
-''' This fit gives mediocre accuracy over a medium-small period of time'''
-history = model.fit(x_train, y_train, validation_data = (x_val, y_val), epochs=100, batch_size=64, verbose=2)
+#model = load_model('trained_model.h5')
 
-''' This fit gives great accuracy over a medium-large period of time'''
-#history = model.fit(x_train, y_train, validation_data = (x_val, y_val), epochs=100, batch_size=12, verbose=2)
-
-''' This fit gives exceptional accuracy over a large period of time'''
-#history = model.fit(x_train, y_train, validation_data = (x_val, y_val), epochs=125, batch_size=3, verbose=2)
-
-''' This fit gives exceptional accuracy over an immense period of time'''
-#history = model.fit(x_train, y_train, validation_data = (x_val, y_val), epochs=150, batch_size=1, verbose=2)
+# Fit the model
+history = model.fit(x_train, y_train, validation_data = (x_val, y_val), epochs=100, batch_size=128, verbose=2)
 
 # Final evaluation of the model
 scores = model.evaluate(x_test, y_test, verbose=0)
@@ -142,6 +129,7 @@ if curr_best_score:
 else:
     lowest_error = float(100)
 
+
 # Save model config that performs best
 if error_pctg < lowest_error:
     with open('best_score.txt', 'w') as best_score:
@@ -151,11 +139,6 @@ if error_pctg < lowest_error:
 # Report Results
 print(history.history)
 prediction = model.predict(x_test, batch_size=64)
-# **********************
-# For finding misclassified images:
-# result = np.absolute(y_test - prediction)
-# https://stackoverflow.com/questions/44740479/image-classification-with-keras-on-tensorflow-how-to-find-which-images-are-misc
-# **********************
 
 
 # ==================================================
@@ -187,6 +170,24 @@ for p in prediction:
 for t in y_test:
     actual.append(np.argmax(t))
 
+
+''' Determine misclassifications (max limit 3)
+test_array = []
+
+why = 221
+
+for r in range(len(projection)):
+    if (projection[r] != actual[r]) and why < 224 :
+        test_array.append((np.argmax(y_test[r]), x_test[r] * 255))
+        plt.subplot(why)
+        print("Prediction: " + str(projection[r]))
+        print("Actual :" + str(actual[r]))
+        plt.imshow(np.reshape(x_test[r] * 255, (28, 28)), cmap=plt.get_cmap('gray'))
+        why += 1
+        
+plt.show()
+'''
+
 # Generate Confusion Matrix
 y_actual = pd.Series(actual, name='Actual')
 y_predict = pd.Series(projection, name='Predicted')
@@ -198,7 +199,7 @@ norm_confusion_matrix = confusion_matrix / confusion_matrix.sum(axis=1)
 # Generate full confusion matrix with totals
 full_confusion_matrix = pd.crosstab(y_actual, y_predict, rownames=['Actual'], colnames=['Predicted'], margins=True)
 
-print(norm_confusion_matrix)
+#print(norm_confusion_matrix)
 print(full_confusion_matrix)
 
 # Pretty plot pretty please
@@ -212,4 +213,4 @@ plt.yticks(tick_marks, confusion_matrix.index)
 plt.ylabel(confusion_matrix.index.name)
 plt.xlabel(confusion_matrix.columns.name)
 
-#plt.show()
+plt.show()
