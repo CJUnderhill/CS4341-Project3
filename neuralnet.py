@@ -151,6 +151,11 @@ if error_pctg < lowest_error:
 # Report Results
 print(history.history)
 prediction = model.predict(x_test, batch_size=64)
+# **********************
+# For finding misclassified images:
+# result = np.absolute(y_test - prediction)
+# https://stackoverflow.com/questions/44740479/image-classification-with-keras-on-tensorflow-how-to-find-which-images-are-misc
+# **********************
 
 
 # ==================================================
